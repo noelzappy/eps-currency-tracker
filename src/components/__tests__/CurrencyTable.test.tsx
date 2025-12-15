@@ -1,6 +1,6 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { CurrencyTable } from '../CurrencyTable'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { DailyRate } from '../../hooks/useHistoricalRates'
 
 describe('CurrencyTable', () => {
@@ -75,5 +75,30 @@ describe('CurrencyTable', () => {
     expect(screen.getByText('1.25000')).toBeInTheDocument()
     // Should find dash for Euro
     expect(screen.getAllByText('-')).toHaveLength(1)
+  })
+
+  it('prevents removing currency when only 3 are left', () => {
+    const onCurrenciesChange = vi.fn()
+    const currencies = ['usd', 'eur', 'gbp'] // Exactly 3
+    render(
+      <CurrencyTable
+        data={[]}
+        currencies={currencies}
+        isLoading={false}
+        onCurrenciesChange={onCurrenciesChange}
+      />,
+    )
+
+    // First we need to enter edit mode to see the buttons
+    const editButton = screen.getByText('Edit')
+    fireEvent.click(editButton)
+
+    // The remove buttons should be disabled
+    const removeButtons = screen.getAllByTitle('Minimum 3 currencies required')
+    expect(removeButtons).toHaveLength(3)
+
+    // Clicking shouldn't fire the callback
+    fireEvent.click(removeButtons[0])
+    expect(onCurrenciesChange).not.toHaveBeenCalled()
   })
 })

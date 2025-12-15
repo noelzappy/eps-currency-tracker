@@ -115,15 +115,24 @@ export const CurrencyTable = ({
                         }`}
                       >
                         <button
+                          disabled={currencies.length <= 3}
                           onClick={() => {
-                            if (onCurrenciesChange) {
+                            if (onCurrenciesChange && currencies.length > 3) {
                               onCurrenciesChange(
                                 currencies.filter((c) => c !== currency),
                               )
                             }
                           }}
-                          className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-500 hover:bg-red-200 transition-colors cursor-pointer"
-                          title="Remove currency"
+                          className={`w-6 h-6 rounded-full flex items-center justify-center transition-colors ${
+                            currencies.length <= 3
+                              ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                              : 'bg-red-100 text-red-500 hover:bg-red-200 cursor-pointer'
+                          }`}
+                          title={
+                            currencies.length <= 3
+                              ? 'Minimum 3 currencies required'
+                              : 'Remove currency'
+                          }
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -201,7 +210,7 @@ export const CurrencyTable = ({
             customTarget={
               <button
                 className={cn(
-                  'flex items-center gap-2 px-4 py-3 rounded-xl transition-all font-semibold text-sm',
+                  'flex items-center gap-2 px-4 py-3 rounded-xl transition-all font-semibold text-sm cursor-pointer',
                   currencies.length >= 7
                     ? 'bg-gray-100 cursor-not-allowed hover:border-gray-200 text-gray-400'
                     : ' text-sky-600 bg-sky-50 hover:bg-sky-100',
