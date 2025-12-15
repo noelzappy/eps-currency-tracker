@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelectState } from '@/hooks/useSelectState'
 import { cn } from '@/lib/utils'
 
@@ -41,6 +41,29 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     handleKeyDown,
   } = useSelectState({ options, value })
 
+  const [dropdownPosition, setDropdownPosition] = useState<'top' | 'bottom'>(
+    'bottom',
+  )
+  const [closing, setClosing] = useState(false)
+  const isRendered = open || closing
+
+  useEffect(() => {
+    if (open) {
+      setClosing(false)
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect()
+        const spaceBelow = window.innerHeight - rect.bottom
+        if (spaceBelow < 250) {
+          setDropdownPosition('top')
+        } else {
+          setDropdownPosition('bottom')
+        }
+      }
+    } else if (!open && isRendered) {
+      setClosing(true)
+    }
+  }, [open, isRendered, containerRef])
+
   return (
     <div ref={containerRef} className={`relative ${className}`}>
       {customTarget ? (
@@ -51,14 +74,23 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           aria-expanded={open}
           onClick={() => {
             if (disabled) return
-            setOpen((o) => !o)
-            setTimeout(() => inputRef.current?.focus(), 0)
+            if (open) {
+              setClosing(true)
+              // let animation play
+            } else {
+              setOpen(true)
+              setTimeout(() => inputRef.current?.focus(), 0)
+            }
           }}
           onKeyDown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault()
-              setOpen((o) => !o)
-              setTimeout(() => inputRef.current?.focus(), 0)
+              if (open) {
+                setClosing(true)
+              } else {
+                setOpen(true)
+                setTimeout(() => inputRef.current?.focus(), 0)
+              }
             }
           }}
         >
@@ -73,8 +105,12 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           disabled={disabled}
           onClick={() => {
             if (disabled) return
-            setOpen((o) => !o)
-            setTimeout(() => inputRef.current?.focus(), 0)
+            if (open) {
+              setClosing(true)
+            } else {
+              setOpen(true)
+              setTimeout(() => inputRef.current?.focus(), 0)
+            }
           }}
           className={cn(
             'w-full flex items-center justify-between gap-2 px-4 py-3 bg-white border border-gray-200 rounded-xl hover:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-all text-sm',
@@ -106,11 +142,27 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
         </button>
       )}
 
-      {open && (
+      {isRendered && (
         <div
           role="dialog"
           aria-modal="false"
-          className="absolute z-50 left-0 mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg"
+          onAnimationEnd={() => {
+            if (closing) {
+              setClosing(false)
+              setOpen(false)
+            }
+          }}
+          style={{
+            ['--radix-dropdown-menu-content-transform-origin' as any]:
+              dropdownPosition === 'bottom' ? 'top center' : 'bottom center',
+          }}
+          className={cn(
+            'absolute z-50 left-0 w-full bg-white border border-gray-200 rounded-xl shadow-lg',
+            dropdownPosition === 'bottom'
+              ? 'top-full mt-2'
+              : 'bottom-full mb-2',
+            closing ? 'animate-dropdown-exit' : 'animate-dropdown-enter',
+          )}
         >
           <div className="p-3">
             <input
@@ -144,8 +196,11 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
                   aria-selected={value === opt.value}
                   onClick={() => {
                     onChange(opt.value)
-                    setOpen(false)
-                    setQuery('')
+                    setClosing(true)
+                    setTimeout(() => {
+                      setOpen(false)
+                      setQuery('')
+                    }, 150)
                   }}
                   className={cn(
                     'flex items-center justify-between gap-2 px-3 py-2 rounded-md cursor-pointer hover:bg-sky-50',
