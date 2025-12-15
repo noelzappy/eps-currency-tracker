@@ -37,7 +37,7 @@ export const CurrencyTracker = () => {
     <div className="w-full max-w-7xl mx-auto space-y-8 pb-20 min-w-0">
       <div className="text-center md:text-left space-y-2">
         <h1 className="text-3xl font-extrabold text-white tracking-tight">
-          Market Dashboard
+          EPS Market Dashboard
         </h1>
         <p className="text-blue-100/80 font-light">
           Monitor real-time exchange rate trends.
