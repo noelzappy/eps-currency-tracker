@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 import React from 'react'
 import { useSelectState } from '@/hooks/useSelectState'
+import { cn } from '@/lib/utils'
 
 export interface Option {
   value: string
@@ -14,6 +15,8 @@ interface CustomSelectProps {
   placeholder?: string
   isLoading?: boolean
   className?: string
+  customTarget?: React.ReactNode
+  disabled?: boolean
 }
 
 export const CustomSelect: React.FC<CustomSelectProps> = ({
@@ -23,6 +26,8 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
   placeholder = 'Select...',
   isLoading = false,
   className = '',
+  customTarget,
+  disabled = false,
 }) => {
   const {
     selected,
@@ -30,44 +35,76 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
     setOpen,
     query,
     setQuery,
-    highlight,
-    setHighlight,
     filtered,
     containerRef,
     inputRef,
     handleKeyDown,
-  } = useSelectState({ options, value, multiple: false })
+  } = useSelectState({ options, value })
 
   return (
     <div ref={containerRef} className={`relative ${className}`}>
-      <button
-        title="Open dropdown"
-        type="button"
-        aria-haspopup="listbox"
-        aria-expanded={open}
-        onClick={() => {
-          setOpen((o) => !o)
-          setTimeout(() => inputRef.current?.focus(), 0)
-        }}
-        className="w-full flex items-center justify-between gap-3 bg-gray-50 border border-gray-200 text-gray-900 text-lg rounded-xl p-3 pr-3 font-bold hover:bg-white hover:shadow-sm"
-      >
-        <div className="flex items-center gap-2 truncate text-left">
-          {selected ? (
-            <span className="truncate">{(selected as Option).label}</span>
-          ) : (
-            <span className="text-gray-400">{placeholder}</span>
-          )}
+      {customTarget ? (
+        <div
+          role="button"
+          tabIndex={0}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          onClick={() => {
+            if (disabled) return
+            setOpen((o) => !o)
+            setTimeout(() => inputRef.current?.focus(), 0)
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setOpen((o) => !o)
+              setTimeout(() => inputRef.current?.focus(), 0)
+            }
+          }}
+        >
+          {customTarget}
         </div>
-        <svg className="w-4 h-4 text-gray-400" viewBox="0 0 20 20" fill="none">
-          <path
-            d="M6 8l4 4 4-4"
-            stroke="currentColor"
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
+      ) : (
+        <button
+          title="Open dropdown"
+          type="button"
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          disabled={disabled}
+          onClick={() => {
+            if (disabled) return
+            setOpen((o) => !o)
+            setTimeout(() => inputRef.current?.focus(), 0)
+          }}
+          className={cn(
+            'w-full flex items-center justify-between gap-2 px-4 py-3 bg-white border border-gray-200 rounded-xl hover:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-all text-sm',
+            disabled
+              ? 'bg-gray-100 cursor-not-allowed hover:border-gray-200'
+              : '',
+          )}
+        >
+          <div className="flex items-center gap-2 truncate text-left">
+            {selected.item ? (
+              <span className="truncate">{selected.item.label}</span>
+            ) : (
+              <span className="text-gray-400">{placeholder}</span>
+            )}
+          </div>
+          <svg
+            className="w-4 h-4 text-gray-400"
+            viewBox="0 0 20 20"
+            fill="none"
+          >
+            <path
+              d="M6 8l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      )}
 
       {open && (
         <div
@@ -89,7 +126,6 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
           <ul
             role="listbox"
             title="Select items"
-            aria-activedescendant={filtered[highlight]?.value}
             tabIndex={-1}
             className="max-h-56 overflow-auto p-2 space-y-1"
           >
@@ -100,19 +136,21 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
             ) : filtered.length === 0 ? (
               <li className="p-2 text-sm text-gray-500">No results</li>
             ) : (
-              filtered.map((opt, idx) => (
+              filtered.map((opt) => (
                 <li
                   key={opt.value}
                   id={opt.value}
                   role="option"
                   aria-selected={value === opt.value}
-                  onMouseEnter={() => setHighlight(idx)}
                   onClick={() => {
                     onChange(opt.value)
                     setOpen(false)
                     setQuery('')
                   }}
-                  className={`flex items-center justify-between gap-2 px-3 py-2 rounded-md cursor-pointer ${idx === highlight ? 'bg-sky-50 text-sky-900' : 'hover:bg-gray-50'}`}
+                  className={cn(
+                    'flex items-center justify-between gap-2 px-3 py-2 rounded-md cursor-pointer hover:bg-sky-50',
+                    value === opt.value ? 'bg-sky-100' : '',
+                  )}
                 >
                   <div className="flex items-center gap-2">
                     <div className="text-sm truncate">{opt.label}</div>

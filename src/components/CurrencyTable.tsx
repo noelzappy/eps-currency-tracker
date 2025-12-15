@@ -1,8 +1,9 @@
 import { Info } from 'lucide-react'
 import { useMemo } from 'react'
-import MultiSelect from './MultiSelect'
+import CustomSelect from './CustomSelect'
 import type { CurrencyMap } from '../hooks/useCurrencies'
 import type { DailyRate } from '../hooks/useHistoricalRates'
+import { cn } from '@/lib/utils'
 
 interface CurrencyTableProps {
   data: Array<DailyRate>
@@ -128,33 +129,63 @@ export const CurrencyTable = ({
         </div>
       </div>
 
-      <div className="relative">
-        <MultiSelect
-          options={
-            currencyList
-              ? Object.entries(currencyList).map(([code, name]) => ({
-                  value: code,
-                  label: `${code.toUpperCase()} — ${name}`,
-                }))
-              : []
-          }
-          value={currencies}
-          onChange={(value) => {
-            if (!onCurrenciesChange) return
-            if (Array.isArray(value)) {
-              onCurrenciesChange(value)
-            } else {
-              onCurrenciesChange([value])
+      <div className="mt-2 mb-20 px-6 pb-8">
+        <div className="w-64">
+          <CustomSelect
+            options={
+              currencyList
+                ? Object.entries(currencyList).map(([code, name]) => ({
+                    value: code,
+                    label: `${code.toUpperCase()} — ${name}`,
+                  }))
+                : []
             }
-          }}
-          placeholder="Add currency"
-          isLoading={!currencyList}
-          customTarget={
-            <span className="absolute top-2 right-2 text-xs text-gray-400 underline underline-offset-2 cursor-pointer hover:text-sky-600">
-              Add / Remove currencies
-            </span>
-          }
-        />
+            value=""
+            onChange={(value) => {
+              if (!onCurrenciesChange) return
+              if (currencies.includes(value)) return
+              if (currencies.length >= 7) return
+              onCurrenciesChange([...currencies, value])
+            }}
+            placeholder="Add currency"
+            isLoading={!currencyList}
+            disabled={currencies.length >= 7}
+            customTarget={
+              <button
+                className={cn(
+                  'flex items-center gap-2 px-4 py-3 rounded-xl transition-all font-semibold text-sm',
+                  currencies.length >= 7
+                    ? 'bg-gray-100 cursor-not-allowed hover:border-gray-200 text-gray-400'
+                    : ' text-sky-600 bg-sky-50 hover:bg-sky-100',
+                )}
+              >
+                <div
+                  className={cn(
+                    'rounded-full p-0.5',
+                    currencies.length >= 7 ? 'bg-gray-400' : 'bg-sky-500',
+                  )}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-white"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </div>
+                Add currency
+              </button>
+            }
+          />
+        </div>
       </div>
     </>
   )

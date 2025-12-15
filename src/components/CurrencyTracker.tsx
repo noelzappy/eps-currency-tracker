@@ -62,7 +62,7 @@ export const CurrencyTracker = () => {
                       : []
                   }
                   value={baseCurrency}
-                  onChange={(v) => setBaseCurrency(Array.isArray(v) ? (v[0] ?? baseCurrency) : v)}
+                  onChange={(v) => setBaseCurrency(v)}
                   isLoading={isLoadingCurrencies}
                   placeholder="Select base currency"
                 />
@@ -84,7 +84,7 @@ export const CurrencyTracker = () => {
                   min={minDate}
                   max={maxDate}
                   onChange={(e) => setReferenceDate(e.target.value)}
-                  className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 block w-full pl-12 p-4 font-medium transition-all hover:bg-white hover:shadow-sm"
+                  className="bg-white border border-gray-200 text-gray-900 cursor-pointer text-sm rounded-xl focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 block w-full pl-12 p-3 font-medium transition-all hover:shadow-sm"
                 />
               </div>
             </div>
@@ -98,7 +98,6 @@ export const CurrencyTracker = () => {
             isLoading={isLoadingRates}
             onCurrenciesChange={setTargetCurrencies}
             currencyList={currencyList}
-            
           />
         </div>
       </div>
