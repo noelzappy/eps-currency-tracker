@@ -13,6 +13,7 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.13.8",
     "@faker-js/faker": "^10.0.0",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/match-sorter-utils": "^8.19.4",
@@ -31,16 +32,15 @@
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.6",
     "tw-animate-css": "^1.3.6",
-    "vite-tsconfig-paths": "^5.1.4",
-    "@cloudflare/vite-plugin": "^1.13.8"
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
-    "@tanstack/react-devtools": "^0.7.0",
-    "@tanstack/react-query-devtools": "^5.84.2",
-    "@tanstack/react-router-devtools": "^1.132.0",
     "@tanstack/devtools-event-client": "^0.3.2",
     "@tanstack/devtools-vite": "^0.3.11",
     "@tanstack/eslint-config": "^0.3.0",
+    "@tanstack/react-devtools": "^0.7.0",
+    "@tanstack/react-query-devtools": "^5.84.2",
+    "@tanstack/react-router-devtools": "^1.132.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^22.10.2",

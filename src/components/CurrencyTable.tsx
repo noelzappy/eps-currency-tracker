@@ -1,5 +1,5 @@
 import { Info } from 'lucide-react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import CustomSelect from './CustomSelect'
 import type { CurrencyMap } from '../hooks/useCurrencies'
 import type { DailyRate } from '../hooks/useHistoricalRates'
@@ -20,6 +20,8 @@ export const CurrencyTable = ({
   currencyList,
   onCurrenciesChange,
 }: CurrencyTableProps) => {
+  const [isEditing, setIsEditing] = useState(false)
+
   const sortedData = useMemo(
     () =>
       [...data].sort(
@@ -59,7 +61,7 @@ export const CurrencyTable = ({
 
   return (
     <>
-      <span className="flex items-center gap-1 text-white lg:hidden">
+      <span className="flex items-center gap-1 text-gray-500 lg:hidden px-4">
         <Info className="w-3 h-3" />
         <p className="text-xs">Scroll to the right to see the full history</p>
       </span>
@@ -72,13 +74,23 @@ export const CurrencyTable = ({
                   scope="col"
                   className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50/95 backdrop-blur z-20 after:absolute after:inset-y-0 after:right-0 after:w-4 after:translate-x-full after:pointer-events-none after:bg-gradient-to-r after:from-black/5 after:to-transparent"
                 >
-                  Currency
+                  <div className="flex items-center justify-between">
+                    <span>Currency</span>
+                    {currencies.length > 0 && (
+                      <button
+                        onClick={() => setIsEditing(!isEditing)}
+                        className="text-sky-600 hover:text-sky-700 transition-colors text-xs font-bold uppercase tracking-wider bg-sky-50 hover:bg-sky-100 px-2 py-1 rounded-md"
+                      >
+                        {isEditing ? 'Done' : 'Edit'}
+                      </button>
+                    )}
+                  </div>
                 </th>
                 {sortedData.map((day) => (
                   <th
                     key={day.date}
                     scope="col"
-                    className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap min-w-[120px]"
+                    className="px-6 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider whitespace-nowrap min-w-30"
                   >
                     {new Date(day.date).toLocaleDateString('en-US', {
                       month: 'short',
@@ -93,16 +105,49 @@ export const CurrencyTable = ({
               {currencies.map((currency) => (
                 <tr
                   key={currency}
-                  className="hover:bg-sky-50/30 transition-colors group"
+                  className="hover:bg-sky-50/30 transition-colors group animate-slide-in"
                 >
                   <td className="px-6 py-5 whitespace-nowrap text-sm font-bold text-gray-900 uppercase sticky left-0 bg-white group-hover:bg-sky-50/30 transition-colors z-10 after:absolute after:inset-y-0 after:right-0 after:w-4 after:translate-x-full after:pointer-events-none after:bg-gradient-to-r after:from-black/5 after:to-transparent border-r border-transparent">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-sky-100 md:flex items-center justify-center text-sky-700 text-xs font-bold hidden">
-                        {currency.slice(0, 1)}
+                    <div className="flex items-center gap-3 transition-all duration-300">
+                      <div
+                        className={`overflow-hidden transition-all duration-300 ${
+                          isEditing ? 'w-8 opacity-100 mr-1' : 'w-0 opacity-0'
+                        }`}
+                      >
+                        <button
+                          onClick={() => {
+                            if (onCurrenciesChange) {
+                              onCurrenciesChange(
+                                currencies.filter((c) => c !== currency),
+                              )
+                            }
+                          }}
+                          className="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center text-red-500 hover:bg-red-200 transition-colors cursor-pointer"
+                          title="Remove currency"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M5 12h14" />
+                          </svg>
+                        </button>
                       </div>
-                      <span className="font-exbold tracking-tight">
-                        {currency}
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-sky-100 md:flex items-center justify-center text-sky-700 text-xs font-bold hidden">
+                          {currency.slice(0, 1)}
+                        </div>
+                        <span className="font-exbold tracking-tight">
+                          {currency}
+                        </span>
+                      </div>
                     </div>
                   </td>
                   {sortedData.map((day) => {
@@ -129,15 +174,18 @@ export const CurrencyTable = ({
         </div>
       </div>
 
+      {/* Add more currencies button  */}
       <div className="mt-2 mb-20 px-6 pb-8">
         <div className="w-64">
           <CustomSelect
             options={
               currencyList
-                ? Object.entries(currencyList).map(([code, name]) => ({
-                    value: code,
-                    label: `${code.toUpperCase()} — ${name}`,
-                  }))
+                ? Object.entries(currencyList)
+                    .filter(([code]) => !currencies.includes(code))
+                    .map(([code, name]) => ({
+                      value: code,
+                      label: `${code.toUpperCase()} — ${name}`,
+                    }))
                 : []
             }
             value=""
