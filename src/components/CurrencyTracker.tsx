@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Calendar } from 'lucide-react'
-import { useCurrencies } from '../hooks/useCurrencies'
-import { useHistoricalRates } from '../hooks/useHistoricalRates'
+import { useCurrencies } from '@/hooks/useCurrencies'
+import { useHistoricalRates } from '@/hooks/useHistoricalRates'
 import { CurrencyTable } from './CurrencyTable'
 import CustomSelect from './CustomSelect'
 

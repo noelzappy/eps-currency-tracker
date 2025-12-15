@@ -1,8 +1,8 @@
 import { Info } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import CustomSelect from './CustomSelect'
-import type { CurrencyMap } from '../hooks/useCurrencies'
-import type { DailyRate } from '../hooks/useHistoricalRates'
+import type { CurrencyMap } from '@/hooks/useCurrencies'
+import type { DailyRate } from '@/hooks/useHistoricalRates'
 import { cn } from '@/lib/utils'
 
 interface CurrencyTableProps {
