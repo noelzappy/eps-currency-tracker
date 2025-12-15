@@ -1,16 +1,15 @@
 import { useState } from 'react'
+import { Calendar } from 'lucide-react'
 import { useCurrencies } from '../hooks/useCurrencies'
 import { useHistoricalRates } from '../hooks/useHistoricalRates'
 import { CurrencyTable } from './CurrencyTable'
-import { Calendar } from 'lucide-react'
 
 export const CurrencyTracker = () => {
-  // defaults
   const [baseCurrency, setBaseCurrency] = useState('gbp')
   const [referenceDate, setReferenceDate] = useState<string>(
     new Date().toISOString().split('T')[0],
   )
-  const [targetCurrencies, setTargetCurrencies] = useState<string[]>([
+  const [targetCurrencies, setTargetCurrencies] = useState<Array<string>>([
     'usd',
     'eur',
     'jpy',
@@ -31,7 +30,7 @@ export const CurrencyTracker = () => {
   const minDate = minDateObj.toISOString().split('T')[0]
 
   return (
-    <div className="w-full max-w-6xl mx-auto p-4 md:p-6 space-y-8 pb-20 min-w-0">
+    <div className="w-full max-w-7xl mx-auto space-y-8 pb-20 min-w-0">
       <div className="text-center md:text-left space-y-2">
         <h1 className="text-3xl font-extrabold text-white tracking-tight">
           Market Dashboard
@@ -49,6 +48,7 @@ export const CurrencyTracker = () => {
             </label>
             <div className="relative">
               <select
+                title="Base Currency"
                 value={baseCurrency}
                 onChange={(e) => setBaseCurrency(e.target.value)}
                 className="appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-lg rounded-xl focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 block w-full p-4 pr-10 uppercase font-bold transition-all hover:bg-white hover:shadow-sm cursor-pointer"
@@ -81,6 +81,7 @@ export const CurrencyTracker = () => {
                 <Calendar className="w-5 h-5" />
               </div>
               <input
+                title="Date"
                 type="date"
                 value={referenceDate}
                 min={minDate}
