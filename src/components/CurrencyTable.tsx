@@ -125,29 +125,36 @@ export const CurrencyTable = ({
               ))}
             </tbody>
           </table>
-
-          <MultiSelect
-            options={
-              currencyList
-                ? Object.entries(currencyList).map(([code, name]) => ({
-                    value: code,
-                    label: `${code.toUpperCase()} — ${name}`,
-                  }))
-                : []
-            }
-            value={currencies}
-            onChange={(value) => {
-              if (!onCurrenciesChange) return
-              if (Array.isArray(value)) {
-                onCurrenciesChange(value)
-              } else {
-                onCurrenciesChange([value])
-              }
-            }}
-            placeholder="Add currency"
-            isLoading={!currencyList}
-          />
         </div>
+      </div>
+
+      <div className="relative">
+        <MultiSelect
+          options={
+            currencyList
+              ? Object.entries(currencyList).map(([code, name]) => ({
+                  value: code,
+                  label: `${code.toUpperCase()} — ${name}`,
+                }))
+              : []
+          }
+          value={currencies}
+          onChange={(value) => {
+            if (!onCurrenciesChange) return
+            if (Array.isArray(value)) {
+              onCurrenciesChange(value)
+            } else {
+              onCurrenciesChange([value])
+            }
+          }}
+          placeholder="Add currency"
+          isLoading={!currencyList}
+          customTarget={
+            <span className="absolute top-2 right-2 text-xs text-gray-400 underline underline-offset-2 cursor-pointer hover:text-sky-600">
+              Add / Remove currencies
+            </span>
+          }
+        />
       </div>
     </>
   )
