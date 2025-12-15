@@ -72,9 +72,9 @@ export const CurrencyTable = ({
               <tr className="bg-gray-50/80 backdrop-blur border-b border-gray-200/60">
                 <th
                   scope="col"
-                  className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50/95 backdrop-blur z-20 after:absolute after:inset-y-0 after:right-0 after:w-4 after:translate-x-full after:pointer-events-none after:bg-gradient-to-r after:from-black/5 after:to-transparent"
+                  className="px-2 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider sticky left-0 bg-gray-50/95 backdrop-blur z-20 after:absolute after:inset-y-0 after:right-0 after:w-4 after:translate-x-full after:pointer-events-none after:bg-gradient-to-r after:from-black/5 after:to-transparent"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <span>Currency</span>
                     {currencies.length > 0 && (
                       <button
@@ -107,7 +107,7 @@ export const CurrencyTable = ({
                   key={currency}
                   className="hover:bg-sky-50/30 transition-colors group animate-slide-in"
                 >
-                  <td className="px-6 py-5 whitespace-nowrap text-sm font-bold text-gray-900 uppercase sticky left-0 bg-white group-hover:bg-sky-50/30 transition-colors z-10 after:absolute after:inset-y-0 after:right-0 after:w-4 after:translate-x-full after:pointer-events-none after:bg-gradient-to-r after:from-black/5 after:to-transparent border-r border-transparent">
+                  <td className="px-2 py-5 whitespace-nowrap text-sm font-bold text-gray-900 uppercase sticky left-0 bg-white group-hover:bg-sky-50/30 transition-colors z-10 after:absolute after:inset-y-0 after:right-0 after:w-4 after:translate-x-full after:pointer-events-none after:bg-gradient-to-r after:from-black/5 after:to-transparent border-r border-transparent">
                     <div className="flex items-center gap-3 transition-all duration-300">
                       <div
                         className={`overflow-hidden transition-all duration-300 ${

@@ -65,7 +65,7 @@ describe('CurrencyTracker', () => {
   it('renders with default state', () => {
     render(<CurrencyTracker />)
 
-    expect(screen.getByText('Market Dashboard')).toBeInTheDocument()
+    expect(screen.getByText('EPS Market Dashboard')).toBeInTheDocument()
     expect(screen.getByTitle('Date')).toBeInTheDocument()
 
     // Default base currency is gbp

@@ -69,7 +69,7 @@ export const CurrencyTracker = () => {
               </div>
             </div>
 
-            <div className="space-y-2 w-full md:w-56">
+            <div className="space-y-2 w-full md:w-56 min-w-0">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider pl-1">
                 Reference Date
               </label>
@@ -84,7 +84,7 @@ export const CurrencyTracker = () => {
                   min={minDate}
                   max={maxDate}
                   onChange={(e) => setReferenceDate(e.target.value)}
-                  className="bg-white border border-gray-200 text-gray-900 cursor-pointer text-sm rounded-xl focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 block w-full pl-12 p-3 font-medium transition-all hover:shadow-sm"
+                  className="bg-white border border-gray-200 text-gray-900 cursor-pointer text-sm rounded-xl focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 pl-12 p-3 font-medium transition-all hover:shadow-sm hover:border-sky-500"
                 />
               </div>
             </div>

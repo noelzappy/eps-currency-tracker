@@ -119,15 +119,17 @@ export const CustomSelect: React.FC<CustomSelectProps> = ({
               : '',
           )}
         >
-          <div className="flex items-center gap-2 truncate text-left">
+          <div className="flex-1 min-w-0 flex items-center gap-2 text-left">
             {selected.item ? (
-              <span className="truncate">{selected.item.label}</span>
+              <span className="truncate block">{selected.item.label}</span>
             ) : (
-              <span className="text-gray-400">{placeholder}</span>
+              <span className="text-gray-400 truncate block">
+                {placeholder}
+              </span>
             )}
           </div>
           <svg
-            className="w-4 h-4 text-gray-400"
+            className="w-4 h-4 text-gray-400 flex-shrink-0"
             viewBox="0 0 20 20"
             fill="none"
           >
