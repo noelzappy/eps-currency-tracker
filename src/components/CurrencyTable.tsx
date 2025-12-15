@@ -1,17 +1,23 @@
 import { Info } from 'lucide-react'
 import { useMemo } from 'react'
+import MultiSelect from './MultiSelect'
+import type { CurrencyMap } from '../hooks/useCurrencies'
 import type { DailyRate } from '../hooks/useHistoricalRates'
 
 interface CurrencyTableProps {
   data: Array<DailyRate>
   currencies: Array<string>
   isLoading: boolean
+  currencyList?: CurrencyMap
+  onCurrenciesChange?: (currencies: Array<string>) => void
 }
 
 export const CurrencyTable = ({
   data,
   currencies,
   isLoading,
+  currencyList,
+  onCurrenciesChange,
 }: CurrencyTableProps) => {
   const sortedData = useMemo(
     () =>
@@ -119,6 +125,28 @@ export const CurrencyTable = ({
               ))}
             </tbody>
           </table>
+
+          <MultiSelect
+            options={
+              currencyList
+                ? Object.entries(currencyList).map(([code, name]) => ({
+                    value: code,
+                    label: `${code.toUpperCase()} — ${name}`,
+                  }))
+                : []
+            }
+            value={currencies}
+            onChange={(value) => {
+              if (!onCurrenciesChange) return
+              if (Array.isArray(value)) {
+                onCurrenciesChange(value)
+              } else {
+                onCurrenciesChange([value])
+              }
+            }}
+            placeholder="Add currency"
+            isLoading={!currencyList}
+          />
         </div>
       </div>
     </>
